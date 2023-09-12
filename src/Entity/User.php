@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -12,120 +14,192 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[ORM\Table(name: '`user`')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
+  #[ORM\Id]
+  #[ORM\GeneratedValue]
+  #[ORM\Column]
+  private ?int $id = null;
 
-    #[ORM\Column(length: 180, unique: true)]
-    private ?string $email = null;
+  #[ORM\Column(length: 180, unique: true)]
+  private ?string $email = null;
 
-    #[ORM\Column]
-    private array $roles = [];
+  #[ORM\Column]
+  private array $roles = [];
 
-    /**
-     * @var string The hashed password
-     */
-    #[ORM\Column]
-    private ?string $password = null;
+  /**
+   * @var string The hashed password
+   */
+  #[ORM\Column]
+  private ?string $password = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $photo = null;
+  #[ORM\Column(length: 255, nullable: true)]
+  private ?string $photo = null;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $description = null;
+  #[ORM\Column(type: Types::TEXT, nullable: true)]
+  private ?string $description = null;
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
+  #[ORM\OneToMany(mappedBy: 'user', targetEntity: Post::class, orphanRemoval: true)]
+  private Collection $posts;
 
-    public function getEmail(): ?string
-    {
-        return $this->email;
-    }
+  #[ORM\OneToMany(mappedBy: 'user', targetEntity: Interaction::class, orphanRemoval: true)]
+  private Collection $interactions;
 
-    public function setEmail(string $email): static
-    {
-        $this->email = $email;
+  public function __construct()
+  {
+      $this->posts = new ArrayCollection();
+      $this->interactions = new ArrayCollection();
+  }
 
-        return $this;
-    }
+  public function getId(): ?int
+  {
+    return $this->id;
+  }
 
-    /**
-     * A visual identifier that represents this user.
-     *
-     * @see UserInterface
-     */
-    public function getUserIdentifier(): string
-    {
-        return (string) $this->email;
-    }
+  public function getEmail(): ?string
+  {
+    return $this->email;
+  }
 
-    /**
-     * @see UserInterface
-     */
-    public function getRoles(): array
-    {
-        $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
+  public function setEmail(string $email): static
+  {
+    $this->email = $email;
 
-        return array_unique($roles);
-    }
+    return $this;
+  }
 
-    public function setRoles(array $roles): static
-    {
-        $this->roles = $roles;
+  /**
+   * A visual identifier that represents this user.
+   *
+   * @see UserInterface
+   */
+  public function getUserIdentifier(): string
+  {
+    return (string) $this->email;
+  }
 
-        return $this;
-    }
+  /**
+   * @see UserInterface
+   */
+  public function getRoles(): array
+  {
+    $roles = $this->roles;
+    // guarantee every user at least has ROLE_USER
+    $roles[] = 'ROLE_USER';
 
-    /**
-     * @see PasswordAuthenticatedUserInterface
-     */
-    public function getPassword(): string
-    {
-        return $this->password;
-    }
+    return array_unique($roles);
+  }
 
-    public function setPassword(string $password): static
-    {
-        $this->password = $password;
+  public function setRoles(array $roles): static
+  {
+    $this->roles = $roles;
 
-        return $this;
-    }
+    return $this;
+  }
 
-    /**
-     * @see UserInterface
-     */
-    public function eraseCredentials(): void
-    {
-        // If you store any temporary, sensitive data on the user, clear it here
-        // $this->plainPassword = null;
-    }
+  /**
+   * @see PasswordAuthenticatedUserInterface
+   */
+  public function getPassword(): string
+  {
+    return $this->password;
+  }
 
-    public function getPhoto(): ?string
-    {
-        return $this->photo;
-    }
+  public function setPassword(string $password): static
+  {
+    $this->password = $password;
 
-    public function setPhoto(?string $photo): static
-    {
-        $this->photo = $photo;
+    return $this;
+  }
 
-        return $this;
-    }
+  /**
+   * @see UserInterface
+   */
+  public function eraseCredentials(): void
+  {
+    // If you store any temporary, sensitive data on the user, clear it here
+    // $this->plainPassword = null;
+  }
 
-    public function getDescription(): ?string
-    {
-        return $this->description;
-    }
+  public function getPhoto(): ?string
+  {
+    return $this->photo;
+  }
 
-    public function setDescription(?string $description): static
-    {
-        $this->description = $description;
+  public function setPhoto(?string $photo): static
+  {
+    $this->photo = $photo;
 
-        return $this;
-    }
+    return $this;
+  }
+
+  public function getDescription(): ?string
+  {
+    return $this->description;
+  }
+
+  public function setDescription(?string $description): static
+  {
+    $this->description = $description;
+
+    return $this;
+  }
+
+  /**
+   * @return Collection<int, Post>
+   */
+  public function getPosts(): Collection
+  {
+      return $this->posts;
+  }
+
+  public function addPost(Post $post): static
+  {
+      if (!$this->posts->contains($post)) {
+          $this->posts->add($post);
+          $post->setUser($this);
+      }
+
+      return $this;
+  }
+
+  public function removePost(Post $post): static
+  {
+      if ($this->posts->removeElement($post)) {
+          // set the owning side to null (unless already changed)
+          if ($post->getUser() === $this) {
+              $post->setUser(null);
+          }
+      }
+
+      return $this;
+  }
+
+  /**
+   * @return Collection<int, Interaction>
+   */
+  public function getInteractions(): Collection
+  {
+      return $this->interactions;
+  }
+
+  public function addInteraction(Interaction $interaction): static
+  {
+      if (!$this->interactions->contains($interaction)) {
+          $this->interactions->add($interaction);
+          $interaction->setUser($this);
+      }
+
+      return $this;
+  }
+
+  public function removeInteraction(Interaction $interaction): static
+  {
+      if ($this->interactions->removeElement($interaction)) {
+          // set the owning side to null (unless already changed)
+          if ($interaction->getUser() === $this) {
+              $interaction->setUser(null);
+          }
+      }
+
+      return $this;
+  }
 }

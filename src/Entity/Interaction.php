@@ -8,43 +8,75 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: InteractionRepository::class)]
 class Interaction
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
+  #[ORM\Id]
+  #[ORM\GeneratedValue]
+  #[ORM\Column]
+  private ?int $id = null;
 
-    #[ORM\Column]
-    private ?bool $user_favorite = null;
+  #[ORM\Column(nullable: true)]
+  private ?bool $user_favorite = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $comment = null;
+  #[ORM\Column(length: 255, nullable: true)]
+  private ?string $comment = null;
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
+  #[ORM\ManyToOne(inversedBy: 'interactions')]
+  #[ORM\JoinColumn(nullable: false)]
+  private ?User $user = null;
 
-    public function isUserFavorite(): ?bool
-    {
-        return $this->user_favorite;
-    }
+  #[ORM\ManyToOne(inversedBy: 'interactions')]
+  #[ORM\JoinColumn(nullable: false)]
+  private ?Post $post = null;
 
-    public function setUserFavorite(bool $user_favorite): static
-    {
-        $this->user_favorite = $user_favorite;
+  public function getId(): ?int
+  {
+    return $this->id;
+  }
 
-        return $this;
-    }
+  public function isUserFavorite(): ?bool
+  {
+    return $this->user_favorite;
+  }
 
-    public function getComment(): ?string
-    {
-        return $this->comment;
-    }
+  public function setUserFavorite(bool $user_favorite): static
+  {
+    $this->user_favorite = $user_favorite;
 
-    public function setComment(string $comment): static
-    {
-        $this->comment = $comment;
+    return $this;
+  }
 
-        return $this;
-    }
+  public function getComment(): ?string
+  {
+    return $this->comment;
+  }
+
+  public function setComment(string $comment): static
+  {
+    $this->comment = $comment;
+
+    return $this;
+  }
+
+  public function getUser(): ?User
+  {
+      return $this->user;
+  }
+
+  public function setUser(?User $user): static
+  {
+      $this->user = $user;
+
+      return $this;
+  }
+
+  public function getPost(): ?Post
+  {
+      return $this->post;
+  }
+
+  public function setPost(?Post $post): static
+  {
+      $this->post = $post;
+
+      return $this;
+  }
 }
