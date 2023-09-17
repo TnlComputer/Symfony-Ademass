@@ -16,12 +16,12 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class PostRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
-    {
-        parent::__construct($registry, Post::class);
-    }
+  public function __construct(ManagerRegistry $registry)
+  {
+    parent::__construct($registry, Post::class);
+  }
 
-//    /**
+  //    /**
 //     * @return Post[] Returns an array of Post objects
 //     */
 //    public function findByExampleField($value): array
@@ -36,7 +36,7 @@ class PostRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?Post
+  //    public function findOneBySomeField($value): ?Post
 //    {
 //        return $this->createQueryBuilder('p')
 //            ->andWhere('p.exampleField = :val')
@@ -45,4 +45,16 @@ class PostRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+  public function findPost($id)
+  {
+    return $this->getEntityManager()
+      ->createQuery('
+    SELECT post.id, post.titulo, post.description, post.type
+    FROM App:Post post
+    WHERE post.id =:id
+    ')
+      ->setParameter('id', $id)
+      ->getSingleResult();
+  }
 }
