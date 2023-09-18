@@ -17,7 +17,7 @@ class Post
   private ?int $id = null;
 
   #[ORM\Column(length: 255)]
-  private ?string $titulo = null;
+  private ?string $title = null;
 
   #[ORM\Column(type: Types::TEXT, nullable: true)]
   private ?string $type = null;
@@ -41,24 +41,31 @@ class Post
   #[ORM\Column(type: Types::TEXT, nullable: true)]
   private ?string $description = null;
 
-  public function __construct()
+  public function __construct($title = null, $type = null, $description = null, $file = null, $url = null)
   {
+    $this->title = $title;
+    $this->description = $description;
+    $this->url = $url;
+    $this->type = $type;
+    $this->creation_date = new \DateTime();
+    $this->file = $file;
     $this->interactions = new ArrayCollection();
   }
+
 
   public function getId(): ?int
   {
     return $this->id;
   }
 
-  public function getTitulo(): ?string
+  public function getTitle(): ?string
   {
-    return $this->titulo;
+    return $this->title;
   }
 
-  public function setTitulo(string $titulo): static
+  public function setTitle(string $title): static
   {
-    $this->titulo = $titulo;
+    $this->title = $title;
 
     return $this;
   }

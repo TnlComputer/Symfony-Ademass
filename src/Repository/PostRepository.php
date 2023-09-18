@@ -50,7 +50,7 @@ class PostRepository extends ServiceEntityRepository
   {
     return $this->getEntityManager()
       ->createQuery('
-    SELECT post.id, post.titulo, post.description, post.type
+    SELECT post.id, post.title, post.description, post.type
     FROM App:Post post
     WHERE post.id =:id
     ')
