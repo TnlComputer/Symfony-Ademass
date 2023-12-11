@@ -36,7 +36,7 @@ class UserController extends AbstractController
           $plaintextPassword
         );
         $user->setPassword($hashedPassword);
-        $user->setRoles(['ROLE_USER']);
+        $user->setRoles(['ROLE_USER']); 
         $this->em->persist($user);
         $this->em->flush();
         return $this->redirectToRoute('userRegistration');
