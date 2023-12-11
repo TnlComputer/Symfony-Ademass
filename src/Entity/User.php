@@ -40,7 +40,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
   #[ORM\OneToMany(mappedBy: 'user', targetEntity: Post::class, orphanRemoval: true)]
   private Collection $posts;
 
-  #[ORM\OneToMany(mappedBy: 'user', targetEntity: Interaction::class, orphanRemoval: true)]
+  #[ORM\OneToMany(mappedBy: 'user', targetEntity: Interaction::class)]
   private Collection $interactions;
 
   // public function __construct()
@@ -48,6 +48,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
   //   $this->posts = new ArrayCollection();
   //   $this->interactions = new ArrayCollection();
   // }
+
+    /**
+     * @param $id
+     * @param $email
+     * @param array $roles
+     * @param $password
+     * @param $photo
+     * @param $description
+     * @param $posts
+     * @param $interactions
+     */
 
   public function __construct($id = null, $email = null, $password = null, $photo = null, $description = null) {
     $this->id = $id;
@@ -69,7 +80,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     return $this->email;
   }
 
-  public function setEmail(string $email): static
+  public function setEmail(string $email): self
   {
     $this->email = $email;
 
