@@ -12,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Post
 {
 
-  const TYPES = ['Opinion' => 'Opinion', 'Humor' => 'Humor', 'Informatica' => 'Informatica'];
+  const TYPES = ['Programación' => 'Programación', 'Humor' => 'Humor', 'Aporte' => 'Aporte', 'Opinión' => 'Opinión', 'Debate' => 'Debate'];
 
   #[ORM\Id]
   #[ORM\GeneratedValue]

@@ -19,8 +19,6 @@ class PostType extends AbstractType
         'choices' => Post::TYPES,
       ])
       ->add('file')
-      ->add('creation_date')
-      ->add('url')
       ->add('description')
       ->add('submit', SubmitType::class)
     ;
