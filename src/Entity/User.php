@@ -43,12 +43,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
   #[ORM\OneToMany(mappedBy: 'user', targetEntity: Interaction::class, orphanRemoval: true)]
   private Collection $interactions;
 
-  public function __construct()
-  {
-      $this->posts = new ArrayCollection();
-      $this->interactions = new ArrayCollection();
-  }
+  // public function __construct()
+  // {
+  //   $this->posts = new ArrayCollection();
+  //   $this->interactions = new ArrayCollection();
+  // }
 
+  public function __construct($id = null, $email = null, $password = null, $photo = null, $description = null) {
+    $this->id = $id;
+    $this->email = $email;
+    $this->password = $password;
+    $this->photo = $photo;
+    $this->description = $description;
+    $this->posts = new ArrayCollection();
+    $this->interactions = new ArrayCollection();
+  }
+  
   public function getId(): ?int
   {
     return $this->id;
@@ -83,12 +93,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
   {
     $roles = $this->roles;
     // guarantee every user at least has ROLE_USER
-    $roles[] = 'ROLE_USER';
+    $roles[] = "ROLE_USER";
 
     return array_unique($roles);
   }
 
-  public function setRoles(array $roles): static
+  public function setRoles(array $roles): self
   {
     $this->roles = $roles;
 
@@ -148,29 +158,29 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
    */
   public function getPosts(): Collection
   {
-      return $this->posts;
+    return $this->posts;
   }
 
   public function addPost(Post $post): static
   {
-      if (!$this->posts->contains($post)) {
-          $this->posts->add($post);
-          $post->setUser($this);
-      }
+    if (!$this->posts->contains($post)) {
+      $this->posts->add($post);
+      $post->setUser($this);
+    }
 
-      return $this;
+    return $this;
   }
 
   public function removePost(Post $post): static
   {
-      if ($this->posts->removeElement($post)) {
-          // set the owning side to null (unless already changed)
-          if ($post->getUser() === $this) {
-              $post->setUser(null);
-          }
+    if ($this->posts->removeElement($post)) {
+      // set the owning side to null (unless already changed)
+      if ($post->getUser() === $this) {
+        $post->setUser(null);
       }
+    }
 
-      return $this;
+    return $this;
   }
 
   /**
@@ -178,28 +188,28 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
    */
   public function getInteractions(): Collection
   {
-      return $this->interactions;
+    return $this->interactions;
   }
 
   public function addInteraction(Interaction $interaction): static
   {
-      if (!$this->interactions->contains($interaction)) {
-          $this->interactions->add($interaction);
-          $interaction->setUser($this);
-      }
+    if (!$this->interactions->contains($interaction)) {
+      $this->interactions->add($interaction);
+      $interaction->setUser($this);
+    }
 
-      return $this;
+    return $this;
   }
 
   public function removeInteraction(Interaction $interaction): static
   {
-      if ($this->interactions->removeElement($interaction)) {
-          // set the owning side to null (unless already changed)
-          if ($interaction->getUser() === $this) {
-              $interaction->setUser(null);
-          }
+    if ($this->interactions->removeElement($interaction)) {
+      // set the owning side to null (unless already changed)
+      if ($interaction->getUser() === $this) {
+        $interaction->setUser(null);
       }
+    }
 
-      return $this;
+    return $this;
   }
 }
