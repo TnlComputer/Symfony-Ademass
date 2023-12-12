@@ -16,12 +16,32 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class PostRepository extends ServiceEntityRepository
 {
-  public function __construct(ManagerRegistry $registry)
-  {
-    parent::__construct($registry, Post::class);
-  }
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, Post::class);
+    }
 
-  //    /**
+    public function remove(Post $entity, bool $flush = false): void
+    {
+        $this->_em->remove($entity);
+        if ($flush) {
+            $this->_em->flush();
+        }
+    }
+
+    public function findAllPosts()
+    {
+        return $this->getEntityManager()
+            ->createQuery('
+                SELECT post.id, post.title, post.description, post.type, post.creation_date, post.url, user.id AS user_id, user.email AS user_email
+                FROM App:Post post
+                JOIN post.user user
+                ORDER BY post.id DESC
+            ')
+            ->getResult();
+    }
+
+    //    /**
 //     * @return Post[] Returns an array of Post objects
 //     */
 //    public function findByExampleField($value): array
@@ -36,7 +56,7 @@ class PostRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-  //    public function findOneBySomeField($value): ?Post
+    //    public function findOneBySomeField($value): ?Post
 //    {
 //        return $this->createQueryBuilder('p')
 //            ->andWhere('p.exampleField = :val')
@@ -45,29 +65,5 @@ class PostRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
-
-  public function findPost()
-  {
-    return $this->getEntityManager()
-      ->createQuery('
-        SELECT post.id, post.title, post.description, post.type
-        FROM App:Post post
-    #    WHERE post.id =:id
-        ')
-      ->setParameter('id', $id)
-      ->getSingleResult();
-  }
-
-    public function findAllPost()
-    {
-        return $this->getEntityManager()
-            ->createQuery('
-                SELECT post.id, post.title, post.description, post.type, post.creation_date, post.url, user.id AS user_id, user.email AS user_email
-                FROM App:Post post
-                JOIN post.user user
-                ORDER BY post.id DESC
-            ')
-            ->getResult();
-    }
 
 }

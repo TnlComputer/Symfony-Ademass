@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\Post;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -18,7 +19,10 @@ class PostType extends AbstractType
       ->add('type', ChoiceType::class, [
         'choices' => Post::TYPES,
       ])
-      ->add('file')
+      ->add('file', FileType::class, [
+            'label' => 'photo',
+            // 'require' => false
+          ])
       ->add('description')
       ->add('submit', SubmitType::class)
     ;
