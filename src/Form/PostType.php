@@ -19,11 +19,11 @@ class PostType extends AbstractType
       ->add('type', ChoiceType::class, [
         'choices' => Post::TYPES,
       ])
+      ->add('description')
       ->add('file', FileType::class, [
             'label' => 'photo',
-            // 'require' => false
+
           ])
-      ->add('description')
       ->add('submit', SubmitType::class)
     ;
   }
