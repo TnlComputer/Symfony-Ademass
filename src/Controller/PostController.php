@@ -31,7 +31,7 @@ class PostController extends AbstractController
     $this->em = $em;
   }
 
-    #[Route('/', name: 'app_post')]
+    #[Route('/', name: 'index')]
   public function index(Request $request, SluggerInterface $slugger): Response
   {
     $post = new Post();
@@ -64,7 +64,7 @@ class PostController extends AbstractController
         $post->setUser($user);
         $this->em->persist($post);
         $this->em->flush();
-        return $this->redirectToRoute('app_post');
+        return $this->redirectToRoute('index');
     }
 
     return $this->render('post/index.html.twig', [
@@ -72,4 +72,11 @@ class PostController extends AbstractController
         'posts' => $posts
     ]);
   }
+
+    #[Route('/post/details/{id}', name: 'postDetails')]
+    public function postDetails(Post $post) {
+
+        return $this->render('post/post-details.html.twig', ['post' => $post]);
+    }
+
 }

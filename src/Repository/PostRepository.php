@@ -33,7 +33,7 @@ class PostRepository extends ServiceEntityRepository
     {
         return $this->getEntityManager()
             ->createQuery('
-                SELECT post.id, post.title, post.description, post.type, post.creation_date, post.url, user.id AS user_id, user.email AS user_email
+                SELECT post.id, post.title, post.description, post.type, post.creation_date, post.url, post.file, user.id AS user_id, user.email AS user_email
                 FROM App:Post post
                 JOIN post.user user
                 ORDER BY post.id DESC
