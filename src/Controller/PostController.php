@@ -10,6 +10,8 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\EntityManagerInterface;
 
+use Knp\Component\Pager\Pagination\PaginationInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Response;
@@ -31,12 +33,17 @@ class PostController extends AbstractController
     $this->em = $em;
   }
 
-    #[Route('/', name: 'index')]
-  public function index(Request $request, SluggerInterface $slugger): Response
+  #[Route('/', name: 'index')]
+  public function index(Request $request, SluggerInterface $slugger, PaginatorInterface $paginator): Response
   {
     $post = new Post();
-    $posts =  $this->em->getRepository(Post::class)->findAllPosts();
+    $query =  $this->em->getRepository(Post::class)->findAllPosts();
 
+    $pagination = $paginator->paginate(
+        $query, /* query NOT result */
+        $request->query->getInt('page', 1), /*page number*/
+        4 /*limit per page*/
+    );
     $form = $this->createForm(PostType::class, $post);
     $form->handleRequest($request);
 
@@ -69,14 +76,13 @@ class PostController extends AbstractController
 
     return $this->render('post/index.html.twig', [
         'form' => $form->createView(),
-        'posts' => $posts
+        'posts' => $pagination
     ]);
   }
 
-    #[Route('/post/details/{id}', name: 'postDetails')]
-    public function postDetails(Post $post) {
-
+  #[Route('/post/details/{id}', name: 'postDetails')]
+  public function postDetails(Post $post) {
         return $this->render('post/post-details.html.twig', ['post' => $post]);
-    }
+  }
 
 }
