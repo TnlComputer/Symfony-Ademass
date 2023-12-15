@@ -4,6 +4,31 @@
 
 {% block body %}
 <div class="container bg-white my-4 p-3">
-    {{ form(registration_form) }}
+    <h2 class="my-3">Registrate, nerd!</h2>
+    {{ form_start(registration_form) }}
+    <div class="row">
+        <div class="col-md-12 my-2">
+            {{ form_label(registration_form.email, 'Correo Electrónico*') }}
+            {{ form_widget(registration_form.email, {'attr': {'placeholder': 'tnlcomputer@gmail.com'}}) }}
+        </div>
+        <div class="col-md-12 my-2">
+            {{ form_label(registration_form.password, 'Contraseña*') }}
+            {{ form_widget(registration_form.password, {'attr': {'placeholder': 'introduce la contraseña'}}) }}
+        </div>
+        <div class="col-md-12 my-2">
+            {{ form_label(registration_form.photo, 'Foto') }}
+            {{ form_widget(registration_form.photo) }}
+        </div>
+        <div class="col-md-12 my-2">
+            {{ form_label(registration_form.description, 'Descripción') }}
+            {{ form_widget(registration_form.description, {'attr': {'placeholder': 'Cuentanos sobre ti'}}) }}
+        </div>
+        <div class="col-md-12 my-2">
+            {{ form_widget(registration_form.submit, {'attr': {'class': 'btn btn-success btn-block'}}) }}
+        </div>
+    </div>
+    {{ form_end(registration_form) }}
+    <a href="{{ path('login') }}" class='btn btn-primary btn-block'>Login</a>
+
 </div>
 {% endblock %}
